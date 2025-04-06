@@ -1,3 +1,4 @@
+import FormStateChecker from '@/components/formstateChecker'
 import { PAGE_ICON } from '@/constants/pages'
 import React from 'react'
 
@@ -14,6 +15,7 @@ const MainBreadCrumb = ({ page, slug }: Props) => {
           <div className="radial--gradient w-4/12 py-5 lg:py-10 flex flex-col items-center">
             <p className="text-text-secondary text-lg">Welcome back</p>
             <h2 className="capitalize text-4xl font-medium">{slug}!</h2>
+           <FormStateChecker/>
           </div>
         </div>
       )}

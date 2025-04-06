@@ -23,6 +23,7 @@ model User {
   subscription Subscription?
   integrations Integrations[]
   automations  Automation[]
+  formFilled   Boolean        @default(false)
 }
 
 model Subscription {

@@ -15,6 +15,25 @@ export const onCurrentUser = async () => {
   return user
 }
 
+export const userFormStatus = async () => {
+  const user = await onCurrentUser()
+  try {
+      const found = await findUser(user.id)
+      if (user) {
+          return {
+              status: 200,
+              data: {
+                  formFilled: found!.formFilled
+              }
+          }
+      }
+      return { status: 404 }
+  }
+  catch (error) {
+      return { status: 500 }
+  } 
+}
+
 export const onBoardUser = async () => {
   const user = await onCurrentUser()
   try {
