@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       business_name,
       business_info,
     }; 
-    const response = await fetch("https://flame-parameter-tp-cowboy.trycloudflare.com/create_business/", {
+    const response = await fetch("https://malta-bryan-lying-guarantee.trycloudflare.com/create_business/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",  

@@ -23,7 +23,9 @@ export const userFormStatus = async () => {
           return {
               status: 200,
               data: {
-                  formFilled: found!.formFilled
+                  formFilled: found!.formFilled,
+                  // firstName: found!.firstName,
+                  // lastName: found!.lastName,
               }
           }
       }
@@ -84,6 +86,26 @@ export const onBoardUser = async () => {
     return { status: 500 }
   }
 }
+ 
+export const onBoardUsername = async () => {
+  const user = await onCurrentUser();  
+ 
+  if (user.firstName && user.lastName) {
+    const fullName = `${user.firstName} ${user.lastName}`;
+    return {
+      status: 200,
+      data: {
+        fullName,  
+      },
+    };
+  }
+
+  return {
+    status: 400, 
+    message: 'First name or last name not available',
+  };
+};
+
 
 export const onUserInfo = async () => {
   const user = await onCurrentUser()

@@ -9,16 +9,17 @@ import {
   ModalTrigger,
 } from "../../ui/animated-modal";
 import Loader from "../loader";
+import { onBoardUsername } from "@/actions/user";
 
 export function AnimatedModalDemo() {
-  const [business_name, setBusinessName] = useState("");
+  // const [business_name, setBusinessName] = useState("");
   const [business_info, setBusinessText] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!business_name || !business_info) {
+    if ( !business_info) {
       toast.error("Please provide all fields.");
       return;
     }
@@ -27,9 +28,10 @@ export function AnimatedModalDemo() {
 
     try {
       const formData = new FormData();
-      formData.append("business_name", business_name);
+      const user = await onBoardUsername()
+      formData.append("business_name", user!.data!.fullName);
       formData.append("business_info", business_info);
-
+      
       const response = await fetch("/api/proxyBusiness", {
         method: "POST",
         body: formData,
@@ -58,7 +60,9 @@ export function AnimatedModalDemo() {
             Setup Your Business
           </span>
           <div className="-translate-x-40 group-hover/modal-btn:translate-x-0 flex items-center justify-center absolute inset-0 transition duration-500 text-white z-20">
+
             ✨
+
           </div>
         </ModalTrigger>
 
@@ -73,10 +77,11 @@ export function AnimatedModalDemo() {
             </h4>
 
             <form onSubmit={handleFormSubmit} className="space-y-4 mt-8">
-              <div>
+              {/* <div>
                 <label
                   htmlFor="business_name"
                   className="block text-neutral-700 dark:text-neutral-300 text-sm"
+
                 >
                   Business Name
                 </label>
@@ -84,12 +89,12 @@ export function AnimatedModalDemo() {
                   id="business_name"
                   name="business_name"
                   type="text"
-                  value={business_name}
+                   
                   onChange={(e) => setBusinessName(e.target.value)}
                   className="mt-2 block w-full px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-md text-sm"
                   required
                 />
-              </div>
+              </div> */}
 
               <div>
                 <label
