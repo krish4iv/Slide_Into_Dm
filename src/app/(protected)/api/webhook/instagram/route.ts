@@ -79,67 +79,42 @@ export async function POST(req: NextRequest) {
             console.log(user.data?.fullName)
 
             //todo steps :- 
+            // ---------------------------------------------------------------------------------------------
 
-  //           const { data, error } = await supabase
-            // .from("businesses")
-            // .select("id")
-            // .eq("name", user.data?.fullName)
-            // .single(); // Assumes business name is unique
+            const { data, error } = await supabase
+            .from("businesses")
+            .select("id")
+            .eq("name", user.data?.fullName)
+            .single(); // Assumes business name is unique
 
+            const payload = {
+              business_name: data.business_name,
+              query: webhook_payload.entry[0].messaging[0].message.text,
+              sender_id: webhook_payload.entry[0].messaging[0].sender.id,
+            }
 
-            // =>  fetch businessId thorugh user.data.fullname supabase query  
-            // post call to  https://malta-bryan-lying-guarantee.trycloudflare.com/  with payload businessid,payload,senderid
+            const smart_ai_message = await fetch(" " , {
+              method:"POST",
+              headers: {
+                 "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload)
+            },)
 
-            // const payload = {
-            //   business_id: businessId, // The business ID from Supabase
-            //   query: webhook_payload.entry[0].messaging[0].message.text, // The message/query from the webhook payload
-            //   sender_id: webhook_payload.entry[0].messaging[0].sender.id, // Sender ID from the webhook
-            // };
-            
-            // // Make the POST request to your AI service
-            // const response = await fetch("https://malta-bryan-lying-guarantee.trycloudflare.com/", {
-            //   method: "POST",
-            //   headers: {
-            //     "Content-Type": "application/json",
-            //   },
-            //   body: JSON.stringify(payload),
+            // ---------------------------------------------------------------------------------------------------
+
+            // call for open ai api, not ours
+            // const smart_ai_message = await openai.chat.completions.create({
+            //   model: "gpt-4o",
+            //   messages: [
+            //     {
+            //       role: "assistant",
+            //       content: `${automation.listener?.prompt}: Keep responses under 2 sentences`,
+            //     },
+            //   ],
             // });
 
-            // const fetchBusinessId = async (id:) => {
-            //   setError("");
-            //   const { data, error } = await supabase
-            //     .from("businesses")
-            //     .select("id")
-            //     .eq("name", businessName)
-            //     .single(); // Assumes business name is unique
-
-            //   if (error) {
-            //     console.error("Error fetching business ID:", error.message);
-            //     setError(error.message);
-            //     return;
-            //   }
-
-            //   if (data) {
-            //     setBusinessId(data.id);
-            //   }
-            // };
-             
-
-            //fetch business id (supbase query )
-            // post
-            // "business_id": "e8a472b5-221f-4053-b820-abb692bd2f23",
-            // "sender_id": "1",
-            // "query": "list the services provided by tech solutions?"
-            const smart_ai_message = await openai.chat.completions.create({
-              model: "gpt-4o",
-              messages: [
-                {
-                  role: "assistant",
-                  content: `${automation.listener?.prompt}: Keep responses under 2 sentences`,
-                },
-              ],
-            });
-
+            
             if (smart_ai_message.choices[0].message.content) {
               const reciever = createChatHistory(
                 automation.id,
