@@ -14,7 +14,10 @@ export const onCurrentUser = async () => {
 
   return user
 }
-
+export const onCurrentUserfor = async () => {
+  const user = await currentUser();
+  return user ?? null;
+};
 export const userFormStatus = async () => {
   const user = await onCurrentUser()
   try {
@@ -89,9 +92,10 @@ export const onBoardUser = async () => {
  
 export const onBoardUsername = async () => {
   const user = await onCurrentUser();  
- 
+  console.log('user',user)
   if (user.firstName && user.lastName) {
     const fullName = `${user.firstName} ${user.lastName}`;
+    console.log('fullname ',fullName)
     return {
       status: 200,
       data: {

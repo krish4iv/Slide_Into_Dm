@@ -11,7 +11,8 @@ import { sendDM, sendPrivateMessage } from "@/lib/fetch";
 import { openai } from "@/lib/openai";
 import { client } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { onBoardUsername } from "@/actions/user";
+import { findUser } from "@/actions/user";
+import { supabase } from "@/utils/supabase/client";
 export async function GET(req: NextRequest) {
   const hub = req.nextUrl.searchParams.get("hub.challenge");
   return new NextResponse(hub);
@@ -73,34 +74,37 @@ export async function POST(req: NextRequest) {
             automation.listener.listener === "SMARTAI" &&
             automation.User?.subscription?.plan === "PRO"
           ) {
-
-
-            const user = await onBoardUsername() //this line 
-            console.log(user.data?.fullName)
-
-            //todo steps :- 
-            // ---------------------------------------------------------------------------------------------
-
+            //   const userId = automation.User?.id;
+            //   const user = await findUser(userId);
+            // //todo steps :-
+            // // ---------------------------------------------------------------------------------------------
+            const business_name = "Elegant Threads";
             const { data, error } = await supabase
-            .from("businesses")
-            .select("id")
-            .eq("name", user.data?.fullName)
-            .single(); // Assumes business name is unique
-
+              .from("businesses")
+              .select("id")
+              .eq("name", business_name)
+               // Assumes business name is unique
+            console.log(data ,"supabase id");
+            console.log(data[0].id);
             const payload = {
-              business_name: data.business_name,
-              query: webhook_payload.entry[0].messaging[0].message.text,
+              business_id: data[0].id,
               sender_id: webhook_payload.entry[0].messaging[0].sender.id,
-            }
+              query: webhook_payload.entry[0].messaging[0].message.text,
+              
+            };
 
-            const smart_ai_message = await fetch(" " , {
-              method:"POST",
-              headers: {
-                 "Content-Type": "application/json",
-              },
-              body: JSON.stringify(payload)
-            },)
-
+            const smart_ai_message = await fetch(
+              "https://written-routines-unsigned-corpus.trycloudflare.com/business_query/",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+              }
+            );
+            console.log(JSON.stringify(payload));
+            console.log(smart_ai_message);
             // ---------------------------------------------------------------------------------------------------
 
             // call for open ai api, not ours
@@ -114,7 +118,6 @@ export async function POST(req: NextRequest) {
             //   ],
             // });
 
-            
             if (smart_ai_message.choices[0].message.content) {
               const reciever = createChatHistory(
                 automation.id,
